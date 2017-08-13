@@ -113,6 +113,7 @@ func (rc *reconciler) reconcile() {
 			// use the volume plugin to actually remove the on-disk snapshot.
 			// It's likely that the operation exists already: it should be fired by the controller right
 			// after the event has arrived.
+                        glog.Infof("reconcile: Call DeleteVolumeSnapshot. (xyang)")
 			rc.snapshotter.DeleteVolumeSnapshot(snapshot)
 		}
 	}

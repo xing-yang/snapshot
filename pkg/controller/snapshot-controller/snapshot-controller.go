@@ -202,6 +202,7 @@ func (c *snapshotController) onSnapshotAdd(obj interface{}) {
 func (c *snapshotController) onSnapshotUpdate(oldObj, newObj interface{}) {
 	oldSnapshot := oldObj.(*crdv1.VolumeSnapshot)
 	newSnapshot := newObj.(*crdv1.VolumeSnapshot)
+        glog.Infof("onSnapshotUpdate: (xyang)")
 	glog.Infof("[CONTROLLER] OnUpdate oldObj: %#v", oldSnapshot.Spec)
 	glog.Infof("[CONTROLLER] OnUpdate newObj: %#v", newSnapshot.Spec)
 	if oldSnapshot.Spec.SnapshotDataName != newSnapshot.Spec.SnapshotDataName {
@@ -210,6 +211,7 @@ func (c *snapshotController) onSnapshotUpdate(oldObj, newObj interface{}) {
 }
 
 func (c *snapshotController) onSnapshotDelete(obj interface{}) {
+        glog.Infof("onSnapshotDelete: (xyang)")
 	deletedSnapshot, ok := obj.(*crdv1.VolumeSnapshot)
 	if !ok {
 		// DeletedFinalStateUnkown is an expected data type here
