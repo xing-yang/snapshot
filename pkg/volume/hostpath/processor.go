@@ -62,6 +62,7 @@ func (h *hostPathPlugin) SnapshotCreate(pv *v1.PersistentVolume, tags *map[strin
 	res := &crdv1.VolumeSnapshotDataSource{
 		HostPath: &crdv1.HostPathVolumeSnapshotSource{
 			Path: file,
+			Status: "",
 		},
 	}
 	return res, cmd.Run()
@@ -94,8 +95,15 @@ func (a *hostPathPlugin) FindSnapshot(tags *map[string]string) (*crdv1.VolumeSna
         return &crdv1.VolumeSnapshotDataSource{
                 HostPath: &crdv1.HostPathVolumeSnapshotSource{
                         Path: "",
+			Status: "",
                 },
         }, nil
+}
+
+// ConvertSnapshotStatus converts a HostPath snapshot status to crdv1.VolumeSnapshotCondition
+func (a *hostPathPlugin) ConvertSnapshotStatus(snapDataSource *crdv1.VolumeSnapshotDataSource) *[]crdv1.VolumeSnapshotCondition {
+        // TODO: Implement ConvertSnapshotStatus
+        return nil
 }
 
 func (h *hostPathPlugin) SnapshotRestore(snapshotData *crdv1.VolumeSnapshotData, _ *v1.PersistentVolumeClaim, _ string, _ map[string]string) (*v1.PersistentVolumeSource, map[string]string, error) {

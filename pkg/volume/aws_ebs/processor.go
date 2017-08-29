@@ -62,13 +62,14 @@ func (a *awsEBSPlugin) SnapshotCreate(pv *v1.PersistentVolume, tags *map[string]
 	snapshotOpt := &aws.SnapshotOptions{
 		VolumeId: volumeId,
 	}
-	snapshotId, err := a.cloud.CreateSnapshot(snapshotOpt)
+	snapshotId, status, err := a.cloud.CreateSnapshot(snapshotOpt)
 	if err != nil {
 		return nil, err
 	}
 	return &crdv1.VolumeSnapshotDataSource{
 		AWSElasticBlockStore: &crdv1.AWSElasticBlockStoreVolumeSnapshotSource{
 			SnapshotID: snapshotId,
+			Status: status,
 		},
 	}, nil
 }
@@ -102,8 +103,15 @@ func (a *awsEBSPlugin) FindSnapshot(tags *map[string]string) (*crdv1.VolumeSnaps
         return &crdv1.VolumeSnapshotDataSource{
 		AWSElasticBlockStore: &crdv1.AWSElasticBlockStoreVolumeSnapshotSource{
 			SnapshotID: "",
+			Status: "",
                 },
         }, nil
+}
+
+// ConvertSnapshotStatus converts a AWS snapshot status to crdv1.VolumeSnapshotCondition
+func (a *awsEBSPlugin) ConvertSnapshotStatus(snapDataSource *crdv1.VolumeSnapshotDataSource) *[]crdv1.VolumeSnapshotCondition {
+	// TODO: Implement ConvertSnapshotStatus
+	return nil
 }
 
 func (a *awsEBSPlugin) SnapshotRestore(snapshotData *crdv1.VolumeSnapshotData, pvc *v1.PersistentVolumeClaim, pvName string, parameters map[string]string) (*v1.PersistentVolumeSource, map[string]string, error) {

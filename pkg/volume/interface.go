@@ -38,6 +38,8 @@ type VolumePlugin interface {
 	DescribeSnapshot(snapshotData *crdv1.VolumeSnapshotData) (isCompleted bool, err error)
 	// FindSnapshot finds a VolumeSnapshot by matching metadata
 	FindSnapshot(tags *map[string]string) (*crdv1.VolumeSnapshotDataSource, error)
+	// ConvertSnapshotStatus converts a snapshot status to crdv1.VolumeSnapshotCondition
+	ConvertSnapshotStatus(snapDataSource *crdv1.VolumeSnapshotDataSource) *[]crdv1.VolumeSnapshotCondition
 	// VolumeDelete deletes a PV
 	// TODO in the future pass kubernetes client for certain volumes (e.g. rbd) so they can access storage class to retrieve secret
 	VolumeDelete(pv *v1.PersistentVolume) error

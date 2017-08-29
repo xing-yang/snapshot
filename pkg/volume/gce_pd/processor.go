@@ -76,6 +76,7 @@ func (plugin *gcePersistentDiskPlugin) SnapshotCreate(pv *v1.PersistentVolume, t
 	return &crdv1.VolumeSnapshotDataSource{
 		GCEPersistentDiskSnapshot: &crdv1.GCEPersistentDiskSnapshotSource{
 			SnapshotName: snapshotName,
+			Status: "",
 		},
 	}, nil
 }
@@ -183,8 +184,15 @@ func (a *gcePersistentDiskPlugin) FindSnapshot(tags *map[string]string) (*crdv1.
         return &crdv1.VolumeSnapshotDataSource{
                 GCEPersistentDiskSnapshot: &crdv1.GCEPersistentDiskSnapshotSource{
                         SnapshotName: "",
+			Status: "",
                 },
         }, nil
+}
+
+// ConvertSnapshotStatus converts a GCE PD snapshot status to crdv1.VolumeSnapshotCondition
+func (a *gcePersistentDiskPlugin) ConvertSnapshotStatus(snapDataSource *crdv1.VolumeSnapshotDataSource) *[]crdv1.VolumeSnapshotCondition {
+        // TODO: Implement ConvertSnapshotStatus
+        return nil
 }
 
 func (plugin *gcePersistentDiskPlugin) VolumeDelete(pv *v1.PersistentVolume) error {

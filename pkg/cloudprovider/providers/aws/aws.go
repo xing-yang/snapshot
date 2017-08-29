@@ -348,7 +348,7 @@ type Volumes interface {
 	DisksAreAttached(map[types.NodeName][]KubernetesVolumeID) (map[types.NodeName]map[KubernetesVolumeID]bool, error)
 
 	// Create an EBS volume snapshot
-	CreateSnapshot(snapshotOptions *SnapshotOptions) (snapshotId string, err error)
+	CreateSnapshot(snapshotOptions *SnapshotOptions) (snapshotId string, status string, err error)
 
 	// Delete an EBS volume snapshot
 	DeleteSnapshot(snapshotId string) (bool, error)
@@ -358,7 +358,7 @@ type Volumes interface {
 	DescribeSnapshot(snapshotId string) (isCompleted bool, err error)
 
 	// Find snapshot by tags
-	FindSnapshot(tags map[string]string) (string, error)
+	FindSnapshot(tags map[string]string) ([]string, []string, error)
 }
 
 // InstanceGroups is an interface for managing cloud-managed instance groups / autoscaling instance groups
@@ -1912,7 +1912,7 @@ func (c *Cloud) DisksAreAttached(nodeDisks map[types.NodeName][]KubernetesVolume
 }
 
 // CreateSnapshot creates an EBS volume snapshot
-func (c *Cloud) CreateSnapshot(snapshotOptions *SnapshotOptions) (snapshotId string, err error) {
+func (c *Cloud) CreateSnapshot(snapshotOptions *SnapshotOptions) (snapshotId string, status string, err error) {
 	request := &ec2.CreateSnapshotInput{}
 	request.VolumeId = aws.String(snapshotOptions.VolumeId)
 	request.DryRun = aws.Bool(false)
@@ -1920,12 +1920,12 @@ func (c *Cloud) CreateSnapshot(snapshotOptions *SnapshotOptions) (snapshotId str
 	request.Description = aws.String(descriptions)
 	res, err := c.ec2.CreateSnapshot(request)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	if res == nil {
-		return "", fmt.Errorf("nil CreateSnapshotResponse")
+		return "", "", fmt.Errorf("nil CreateSnapshotResponse")
 	}
-	return *res.SnapshotId, nil
+	return *res.SnapshotId, "", nil
 
 }
 
@@ -1968,8 +1968,9 @@ func (c *Cloud) DescribeSnapshot(snapshotId string) (isCompleted bool, err error
 }
 
 // FindSnapshot returns the found snapshot
-func (c *Cloud) FindSnapshot(tags map[string]string) (string, error) {
-	return "", nil
+func (c *Cloud) FindSnapshot(tags map[string]string) ([]string, []string, error) {
+        var snapshotIDs, statuses []string
+        return snapshotIDs, statuses, nil
 }
 
 // Gets the current load balancer state
